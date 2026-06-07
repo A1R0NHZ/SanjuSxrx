@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Bala" />
+  <title>SxCrypt Whitepaper</title>
+  <style>
+    html {
+      font-size: 11pt;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  
+  
+  
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">SxCrypt Whitepaper</h1>
+<p class="subtitle">A Final-Stage Technical Whitepaper on Adaptive,
+Containment-Oriented Vault Defense</p>
+<p class="author">Bala</p>
+<p class="date">Final Version — 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+
+</nav>
+<h1 id="abstract">Abstract</h1>
+<p>SxCrypt is a defensive cryptographic vault system built around
+modern, audited primitives, augmented by a <em>reactor-inspired</em>
+adaptive defense model. It does <strong>not</strong> claim to replace
+AES, nor does it claim that any custom block-cipher construction
+included with it is mathematically stronger than AES. Instead, SxCrypt
+asserts a precise and verifiable thesis:</p>
+<blockquote>
+<p><strong>AES protects ciphertext. SxCrypt builds a full defensive
+vault system <em>around</em> AES</strong> using adaptive
+reactor-inspired containment, attacker-cost escalation, decoy
+uncertainty, key zeroization, tamper evidence, and recovery-controlled
+lock states.</p>
+</blockquote>
+<p>A failed access attempt does not damage external systems. Instead, it
+triggers an internal <em>defensive chain reaction</em>: computational
+cost grows, memory cost grows, delay grows, decoy uncertainty grows, and
+containment state becomes stricter. The system remains
+<strong>non-destructive, defensive-only, and vault-local</strong> at all
+times.</p>
+<p>This whitepaper presents the formal mathematical model, threat model,
+architecture, state machine, key schedule, encryption flow, evaluation
+methodology, implementation rules, and safety boundaries of SxCrypt. It
+also presents SxCrypt-Core, a research-only AES-style SPN cipher used
+purely as a mathematical laboratory for studying substitution,
+permutation, diffusion, avalanche, and S-box quality.</p>
+<p>The whitepaper closes with a brief personal dedication, kept
+structurally separate from all technical claims.</p>
+<hr />
+<h1 id="introduction">1. Introduction</h1>
+<h2 id="motivation">1.1 Motivation</h2>
+<p>Modern symmetric encryption is, in isolation, extraordinarily strong.
+AES-256-GCM with a high-entropy key is not the weak link in any
+realistic deployment. The weak links are:</p>
+<ol type="1">
+<li>Human passphrases of low entropy.</li>
+<li>Repeated guessing attempts against stolen vault blobs.</li>
+<li>Tampering with vault metadata or ciphertext.</li>
+<li>Replay of stale blobs.</li>
+<li>Lack of containment when an adversary obtains a copy of the
+vault.</li>
+<li>Side observation of failed attempts.</li>
+<li>Absence of an enforced cost-growth model against offline
+attackers.</li>
+</ol>
+<p>SxCrypt addresses the <em>system layer</em> around the cipher, not
+the cipher itself.</p>
+<h2 id="thesis">1.2 Thesis</h2>
+<blockquote>
+<p>A failed attempt must increase <strong>internal defensive
+cost</strong>, never <strong>external damage</strong>.</p>
+</blockquote>
+<p>This is the <em>core law</em> of SxCrypt. Every design decision in
+this document is derived from, or constrained by, that law.</p>
+<h2 id="honest-positioning">1.3 Honest Positioning</h2>
+<p>SxCrypt <strong>is not</strong>:</p>
+<ul>
+<li>A replacement for AES.</li>
+<li>A proven improvement over AES as a block cipher.</li>
+<li>A destructive countermeasure framework.</li>
+<li>A network-active or self-propagating system.</li>
+<li>A forensic eraser, wiper, or anti-forensic payload.</li>
+</ul>
+<p>SxCrypt <strong>is</strong>:</p>
+<ul>
+<li>A vault-local, non-destructive defensive system.</li>
+<li>An adaptive reactor of computational and memory cost.</li>
+<li>A formally specified state machine of containment levels.</li>
+<li>A standards-based encryption pipeline (AES-256-GCM, Argon2id,
+HKDF-SHA512, HMAC-SHA512).</li>
+<li>A research laboratory (SxCrypt-Core) for studying SPN cipher
+internals.</li>
+</ul>
+<hr />
+<h1 id="system-overview">2. System Overview</h1>
+<p>SxCrypt is composed of <strong>three clearly separated
+layers</strong>:</p>
+<pre><code>+---------------------------------------------------------------+
+|                  REACTOR DEFENSE MODEL                        |
+|   adaptive cost, delay, decoys, containment, zeroization      |
++---------------------------------------------------------------+
+|                       SxCrypt-Vault                           |
+|   AES-256-GCM | Argon2id | HKDF-SHA512 | HMAC-SHA512          |
++---------------------------------------------------------------+
+|                  SxCrypt-Core (RESEARCH ONLY)                 |
+|   AES-style SPN: SubBytes, ShiftRows*, MixColumns*, ARK       |
++---------------------------------------------------------------+</code></pre>
+<h2 id="sxcrypt-core-research-layer">2.1 SxCrypt-Core (Research
+Layer)</h2>
+<p>A research-only AES-style SPN block cipher used to study:</p>
+<ul>
+<li>Byte-substitution via a GF(2^8) inverse plus affine transform.</li>
+<li>ShiftRows-like permutation.</li>
+<li>MixColumns-like GF(2^8) diffusion.</li>
+<li>AddRoundKey and key expansion.</li>
+<li>Avalanche, entropy, branch number, active S-box counts.</li>
+</ul>
+<p>Supported parameters: <strong>128 / 192 / 256-bit keys</strong>,
+<strong>12 / 14 / 16 rounds</strong>.</p>
+<blockquote>
+<p><strong>Warning.</strong> SxCrypt-Core is
+<strong>experimental</strong>. It is <strong>not</strong> the default
+protection layer for real secrets. It is a mathematical laboratory, not
+a deployment cipher.</p>
+</blockquote>
+<h2 id="sxcrypt-vault-production-layer">2.2 SxCrypt-Vault (Production
+Layer)</h2>
+<p>The production-oriented defensive vault, built exclusively from
+standard, audited primitives:</p>
+<ul>
+<li><strong>Argon2id</strong> for passphrase hardening.</li>
+<li><strong>AES-256-GCM</strong> for authenticated encryption.</li>
+<li><strong>HMAC-SHA512</strong> for external integrity and tamper
+evidence.</li>
+<li><strong>HKDF-SHA512</strong> for key separation.</li>
+<li>Cryptographically secure random salts, nonces, vault IDs, and decoy
+IDs.</li>
+</ul>
+<p>The vault must never:</p>
+<ul>
+<li>Attack any external system.</li>
+<li>Spread or self-replicate.</li>
+<li>Delete external files.</li>
+<li>Scan the host system.</li>
+<li>Exfiltrate data.</li>
+<li>Modify anything outside its own vault container.</li>
+</ul>
+<h2 id="reactor-defense-model-adaptive-layer">2.3 Reactor Defense Model
+(Adaptive Layer)</h2>
+<p>The reactor is the adaptive control plane. Every wrong attempt raises
+attacker cost, waiting time, memory cost, decoy uncertainty, and
+containment level. The reaction is strictly internal:</p>
+<ul>
+<li>It may zeroize temporary in-memory secrets.</li>
+<li>It may lock the vault and require recovery.</li>
+<li>It must <strong>not</strong> delete user files, system files, other
+vaults, folders, drives, or network data.</li>
+</ul>
+<p>States used by the reactor (full definitions in §6):</p>
+<p><code>OPEN</code>, <code>BACKOFF</code>, <code>QUARANTINE</code>,
+<code>SCRAM_LOCK</code>, <code>CONTAINMENT_LOCK</code>,
+<code>RECOVERY_REQUIRED</code>, <code>ZEROIZE_SESSION</code>,
+<code>DECOY_OPEN</code>, <code>TAMPER_EVIDENT</code>.</p>
+<blockquote>
+<p><strong>Terminology.</strong> The word <em>meltdown</em> is
+intentionally avoided as a destructive system action. If used at all, it
+refers only to a <strong>visual metaphor</strong> for maximum internal
+containment — never deletion, damage, or any external effect.</p>
+</blockquote>
+<hr />
+<h1 id="threat-model">3. Threat Model</h1>
+<h2 id="adversary-capabilities-considered">3.1 Adversary Capabilities
+Considered</h2>
+<p>SxCrypt is designed against an attacker that may:</p>
+<ul>
+<li>Obtain a copy of a sealed vault blob.</li>
+<li>Run unbounded offline brute-force on it.</li>
+<li>Submit many wrong passphrases interactively.</li>
+<li>Automate guessing scripts.</li>
+<li>Tamper with vault headers, nonces, associated data, or
+ciphertext.</li>
+<li>Replay older vault blobs where policy makes replay relevant.</li>
+<li>Inspect casual forensic metadata (filenames, timestamps).</li>
+<li>Probe with timing-insensitive abuse patterns.</li>
+</ul>
+<h2 id="adversary-capabilities-out-of-scope">3.2 Adversary Capabilities
+Out of Scope</h2>
+<p>SxCrypt explicitly does <strong>not</strong> defend against:</p>
+<ul>
+<li>A compromised endpoint while the vault is open.</li>
+<li>Keyloggers capturing the passphrase.</li>
+<li>Malware with root or administrator privileges.</li>
+<li>Screen capture of unlocked plaintext.</li>
+<li>Genuinely weak passphrases.</li>
+<li>Social engineering.</li>
+<li>Nation-state cold-boot or DRAM remanence attacks after unlock.</li>
+<li>Side-channel attacks (power, EM, cache) unless separately
+hardened.</li>
+<li>Malicious builds or backdoored source code.</li>
+</ul>
+<h2 id="security-goals">3.3 Security Goals</h2>
+<ol type="1">
+<li><strong>Confidentiality</strong> of sealed payloads under
+AES-256-GCM.</li>
+<li><strong>Integrity and authenticity</strong> via GCM tag and an
+external HMAC-SHA512.</li>
+<li><strong>Cost growth</strong> against repeated failed attempts.</li>
+<li><strong>Containment</strong> that escalates monotonically with risk
+score.</li>
+<li><strong>Tamper evidence</strong> for any modification of header,
+nonce, AAD, or ciphertext.</li>
+<li><strong>Decoy-induced attacker uncertainty</strong> with zero risk
+to legitimate users.</li>
+<li><strong>Non-destructiveness</strong>: no operation, ever, damages
+external state.</li>
+</ol>
+<hr />
+<h1 id="notation">4. Notation</h1>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(v\)</span></td>
+<td>Vault identity</td>
+</tr>
+<tr>
+<td><span class="math inline">\(\tau\)</span></td>
+<td>Policy time window</td>
+</tr>
+<tr>
+<td><span class="math inline">\(n\)</span></td>
+<td>Failed unlock attempts in <span
+class="math inline">\(\tau\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(C(n)\)</span></td>
+<td>Adaptive computational cost</td>
+</tr>
+<tr>
+<td><span class="math inline">\(M(n)\)</span></td>
+<td>Adaptive Argon2id memory</td>
+</tr>
+<tr>
+<td><span class="math inline">\(I(n)\)</span></td>
+<td>Adaptive Argon2id iterations</td>
+</tr>
+<tr>
+<td><span class="math inline">\(p(n)\)</span></td>
+<td>Argon2id parallelism</td>
+</tr>
+<tr>
+<td><span class="math inline">\(D(n)\)</span></td>
+<td>Adaptive defensive delay</td>
+</tr>
+<tr>
+<td><span class="math inline">\(B(n)\)</span></td>
+<td>Decoy branch count</td>
+</tr>
+<tr>
+<td><span class="math inline">\(U(n)\)</span></td>
+<td>Attacker uncertainty (bits)</td>
+</tr>
+<tr>
+<td><span class="math inline">\(A(n)\)</span></td>
+<td>Anomaly score</td>
+</tr>
+<tr>
+<td><span class="math inline">\(H_{\text{tamper}}\)</span></td>
+<td>Tamper-evidence term</td>
+</tr>
+<tr>
+<td><span class="math inline">\(R(n)\)</span></td>
+<td>Reactor risk score</td>
+</tr>
+<tr>
+<td><span class="math inline">\(T_1, T_2, T_3, T_4\)</span></td>
+<td>State thresholds</td>
+</tr>
+<tr>
+<td><span class="math inline">\(K_\bullet\)</span></td>
+<td>Various derived keys</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="mathematical-model-of-the-reactor">5. Mathematical Model of the
+Reactor</h1>
+<h2 id="attempt-history">5.1 Attempt History</h2>
+<p>For a vault <span class="math inline">\(v\)</span> over window <span
+class="math inline">\(\tau\)</span>, define attempt history</p>
+<p><span class="math display">\[
+A_v(\tau) = \{a_1, a_2, \dots, a_n\},
+\]</span></p>
+<p>where each attempt is the tuple</p>
+<p><span class="math display">\[
+a_i = (t_i,\ \text{ip}_i,\ \text{device}_i,\ \text{result}_i,\
+\text{latency}_i,\ \text{state}_i,\ \text{integrity}_i).
+\]</span></p>
+<p>Failed-attempt count:</p>
+<p><span class="math display">\[
+n_v(\tau) = \sum_{i=1}^{|A_v(\tau)|} \mathbf{1}[\text{result}_i =
+\text{fail}].
+\]</span></p>
+<h2 id="adaptive-computational-cost">5.2 Adaptive Computational
+Cost</h2>
+<p><span class="math display">\[
+C(n) = C_0 \cdot \alpha^n, \qquad \alpha &gt; 1.
+\]</span></p>
+<p>Capped:</p>
+<p><span class="math display">\[
+\hat{C}(n) = \min\!\bigl(C_{\max},\ C_0 \cdot \alpha^n\bigr).
+\]</span></p>
+<p>The cap <span class="math inline">\(C_{\max}\)</span> guarantees
+legitimate users a bounded worst-case latency after accidental
+failures.</p>
+<h2 id="adaptive-argon2id-memory">5.3 Adaptive Argon2id Memory</h2>
+<p><span class="math display">\[
+M(n) = \min\!\bigl(M_{\max},\ M_0 \cdot 2^{n}\bigr).
+\]</span></p>
+<p>Example schedule:</p>
+<table>
+<thead>
+<tr>
+<th><span class="math inline">\(n\)</span></th>
+<th><span class="math inline">\(M(n)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>64 MiB</td>
+</tr>
+<tr>
+<td>1</td>
+<td>128 MiB</td>
+</tr>
+<tr>
+<td>2</td>
+<td>256 MiB</td>
+</tr>
+<tr>
+<td>3</td>
+<td>512 MiB</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1024 MiB</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2048 MiB</td>
+</tr>
+</tbody>
+</table>
+<h2 id="adaptive-iterations-and-parallelism">5.4 Adaptive Iterations and
+Parallelism</h2>
+<p><span class="math display">\[
+I(n) = \min\!\bigl(I_{\max},\ I_0 \cdot \gamma^{n}\bigr), \qquad \gamma
+&gt; 1.
+\]</span></p>
+<p>Parallelism is held fixed:</p>
+<p><span class="math display">\[
+p(n) = p_0,
+\]</span></p>
+<p>unless the implementation explicitly supports safe bounded
+scaling.</p>
+<h2 id="defensive-delay">5.5 Defensive Delay</h2>
+<p><span class="math display">\[
+D(n) = \min\!\bigl(D_{\max},\ D_0 \cdot \beta^n\bigr), \qquad \beta &gt;
+1.
+\]</span></p>
+<p><span class="math inline">\(D_{\max}\)</span> is critical: it
+prevents the reactor itself from becoming a denial-of-service vector
+against legitimate users.</p>
+<h2 id="decoy-branching-and-uncertainty">5.6 Decoy Branching and
+Uncertainty</h2>
+<p><span class="math display">\[
+B(n) = \min\!\bigl(B_{\max},\ 2^{n}\bigr).
+\]</span></p>
+<p>Attacker uncertainty in bits:</p>
+<p><span class="math display">\[
+U(n) = \log_2\!\bigl(B(n) + 1\bigr).
+\]</span></p>
+<p>Probability that an attempt is routed to a decoy:</p>
+<p><span class="math display">\[
+P_{\text{decoy}}(n) = 1 - e^{-\kappa B(n)},
+\]</span></p>
+<p>where <span class="math inline">\(\kappa &gt; 0\)</span> controls
+decoy activation strength.</p>
+<h2 id="reactor-risk-score">5.7 Reactor Risk Score</h2>
+<p><span class="math display">\[
+R(n) = w_c \log\!\bigl(1+\hat{C}(n)\bigr) + w_m \log\!\bigl(1+M(n)\bigr)
++ w_i \log\!\bigl(1+I(n)\bigr)
+     + w_d D(n) + w_b U(n) + w_a A(n) + w_h H_{\text{tamper}}.
+\]</span></p>
+<p>All weights <span class="math inline">\(w_\bullet \geq 0\)</span> are
+configurable per deployment.</p>
+<h2 id="anomaly-score">5.8 Anomaly Score</h2>
+<p><span class="math display">\[
+A(n) = \lambda_1 F_{\text{rate}} + \lambda_2 F_{\text{geo}} + \lambda_3
+F_{\text{device}}
+     + \lambda_4 F_{\text{timing}} + \lambda_5 F_{\text{integrity}} +
+\lambda_6 F_{\text{replay}}.
+\]</span></p>
+<p>Components:</p>
+<ul>
+<li><span class="math inline">\(F_{\text{rate}}\)</span>: rate of
+repeated attempts.</li>
+<li><span class="math inline">\(F_{\text{geo}}\)</span>: abnormal
+location changes.</li>
+<li><span class="math inline">\(F_{\text{device}}\)</span>: unfamiliar
+device fingerprints.</li>
+<li><span class="math inline">\(F_{\text{timing}}\)</span>: scripted or
+unnatural timing distributions.</li>
+<li><span class="math inline">\(F_{\text{integrity}}\)</span>:
+vault-header or ciphertext tamper signals.</li>
+<li><span class="math inline">\(F_{\text{replay}}\)</span>: repeated
+stale blob submissions.</li>
+</ul>
+<h2 id="decoy-entropy">5.9 Decoy Entropy</h2>
+<p><span class="math display">\[
+H_{\text{decoy}}(n) = -\sum_i p_i \log_2 p_i,
+\]</span></p>
+<p>where <span class="math inline">\(\{p_i\}\)</span> is the
+distribution over the <span class="math inline">\(B(n)\)</span> decoy
+branches plus the real branch.</p>
+<p>The reactor optimizes:</p>
+<p><span class="math display">\[
+\max\ U(n) \quad \text{subject to} \quad \text{false-positive harm to
+legitimate users} \leq \epsilon.
+\]</span></p>
+<hr />
+<h1 id="state-machine">6. State Machine</h1>
+<h2 id="states">6.1 States</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>State</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OPEN</code></td>
+<td>Vault unlocked for the current authenticated session.</td>
+</tr>
+<tr>
+<td><code>BACKOFF</code></td>
+<td>Linear/exponential cooldown after small numbers of failures.</td>
+</tr>
+<tr>
+<td><code>QUARANTINE</code></td>
+<td>Stronger throttling; decoys may activate.</td>
+</tr>
+<tr>
+<td><code>SCRAM_LOCK</code></td>
+<td>Emergency lock; session keys zeroized; recovery required to
+retry.</td>
+</tr>
+<tr>
+<td><code>CONTAINMENT_LOCK</code></td>
+<td>Hardest internal containment; no further attempts processed until
+recovery.</td>
+</tr>
+<tr>
+<td><code>RECOVERY_REQUIRED</code></td>
+<td>Awaiting out-of-band recovery credential or operator action.</td>
+</tr>
+<tr>
+<td><code>ZEROIZE_SESSION</code></td>
+<td>Transient state during secure wiping of in-memory secrets.</td>
+</tr>
+<tr>
+<td><code>DECOY_OPEN</code></td>
+<td>A wrong passphrase matched a decoy branch; vault returned a
+vault-local decoy payload.</td>
+</tr>
+<tr>
+<td><code>TAMPER_EVIDENT</code></td>
+<td>HMAC or GCM verification failed; integrity violation recorded.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="transition-function">6.2 Transition Function</h2>
+<p><span class="math display">\[
+\text{State}(n) =
+\begin{cases}
+\texttt{OPEN}, &amp; R(n) &lt; T_1 \\
+\texttt{BACKOFF}, &amp; T_1 \leq R(n) &lt; T_2 \\
+\texttt{QUARANTINE}, &amp; T_2 \leq R(n) &lt; T_3 \\
+\texttt{SCRAM\_LOCK}, &amp; T_3 \leq R(n) &lt; T_4 \\
+\texttt{CONTAINMENT\_LOCK}, &amp; R(n) \geq T_4
+\end{cases}
+\]</span></p>
+<p>Tamper signals and decoy routing are overlaid on top of this base
+mapping:</p>
+<ul>
+<li>If <span class="math inline">\(H_{\text{tamper}} = 1\)</span>, the
+state transitions to <code>TAMPER_EVIDENT</code> (and may escalate to
+<code>SCRAM_LOCK</code>).</li>
+<li>If a decoy branch matches policy, <code>DECOY_OPEN</code> is entered
+for that single response.</li>
+</ul>
+<h2 id="recovery-condition">6.3 Recovery Condition</h2>
+<p><span class="math display">\[
+\text{RecoveryRequired} =
+\begin{cases}
+1, &amp; \text{State}(n) \in \{\texttt{SCRAM\_LOCK},\
+\texttt{CONTAINMENT\_LOCK}\} \\
+0, &amp; \text{otherwise.}
+\end{cases}
+\]</span></p>
+<h2 id="zeroization-rule">6.4 Zeroization Rule</h2>
+<p>If <span class="math inline">\(\text{State}(n) \in
+\{\texttt{SCRAM\_LOCK},\ \texttt{CONTAINMENT\_LOCK},\
+\texttt{RECOVERY\_REQUIRED}\}\)</span>:</p>
+<p><span class="math display">\[
+\text{Zeroize}\bigl(K_{\text{session}},\ K_{\text{master}},\
+K_{\text{enc}},\ K_{\text{mac}},\ K_{\text{decoy}},\
+\text{plaintext\_cache},\ \text{passphrase\_buffer},\
+\text{derived\_key\_buffer}\bigr).
+\]</span></p>
+<p><strong>Boundary.</strong> Zeroization affects <strong>only</strong>
+temporary internal secrets in process memory. It does
+<strong>not</strong> delete external files, user files, OS files,
+folders, other vaults, drives, or any network data.</p>
+<h2 id="state-diagram">6.5 State Diagram</h2>
+<pre><code>              +--------+
+              |  OPEN  |&lt;-----------------------------+
+              +---+----+                              |
+                  | R(n) &gt;= T1                        |
+                  v                                   |
+              +--------+      success / recovery      |
+              |BACKOFF +----------------------------&gt; +
+              +---+----+                              |
+                  | R(n) &gt;= T2                        |
+                  v                                   |
+            +-----------+                             |
+            |QUARANTINE +---------------------------&gt; +
+            +-----+-----+                             |
+                  | R(n) &gt;= T3                        |
+                  v                                   |
+           +-------------+   ZEROIZE_SESSION          |
+           | SCRAM_LOCK  +-------&gt; (wipe RAM secrets) |
+           +------+------+                            |
+                  | R(n) &gt;= T4                        |
+                  v                                   |
+        +-------------------+      recovery           |
+        | CONTAINMENT_LOCK  +-----&gt; RECOVERY_REQUIRED-+
+        +-------------------+</code></pre>
+<p><code>TAMPER_EVIDENT</code> and <code>DECOY_OPEN</code> are overlay
+states triggered orthogonally to <span
+class="math inline">\(R(n)\)</span> thresholds.</p>
+<hr />
+<h1 id="cryptographic-pipeline-sxcrypt-vault">7. Cryptographic Pipeline
+(SxCrypt-Vault)</h1>
+<h2 id="key-derivation">7.1 Key Derivation</h2>
+<p>Given passphrase <span class="math inline">\(P\)</span>, salt <span
+class="math inline">\(s\)</span>, current memory <span
+class="math inline">\(M(n)\)</span>, iterations <span
+class="math inline">\(I(n)\)</span>, parallelism <span
+class="math inline">\(p\)</span>:</p>
+<p><span class="math display">\[
+K_{\text{master}} = \text{Argon2id}\bigl(P,\ s,\ M(n),\ I(n),\ p\bigr).
+\]</span></p>
+<h2 id="key-separation">7.2 Key Separation</h2>
+<p><span class="math display">\[
+K_{\text{enc}} \,\|\, K_{\text{mac}} \,\|\, K_{\text{decoy}} \,\|\,
+K_{\text{audit}} \,\|\, K_{\text{policy}}
+= \text{HKDF\text{-}SHA512}\bigl(K_{\text{master}},\ \text{info} =
+\texttt{&quot;SxCrypt-Vault-v2&quot;}\bigr).
+\]</span></p>
+<p>Distinct <code>info</code> strings can be used for each subkey in
+practice; the concatenation form is shown for compactness.</p>
+<h2 id="authenticated-encryption">7.3 Authenticated Encryption</h2>
+<p><span class="math display">\[
+C = \text{AES\text{-}256\text{-}GCM.Encrypt}\bigl(K_{\text{enc}},\
+\text{nonce},\ \text{plaintext},\ \text{AAD}\bigr).
+\]</span></p>
+<p><span class="math display">\[
+\text{tag}_{\text{gcm}} = \text{GCM\_Tag}(C).
+\]</span></p>
+<h2 id="external-integrity">7.4 External Integrity</h2>
+<p><span class="math display">\[
+\text{tag}_{\text{hmac}} =
+\text{HMAC\text{-}SHA512}\bigl(K_{\text{mac}},\ \text{header} \,\|\,
+\text{nonce} \,\|\, \text{AAD} \,\|\, C \,\|\,
+\text{tag}_{\text{gcm}}\bigr).
+\]</span></p>
+<h2 id="tamper-verification">7.5 Tamper Verification</h2>
+<p><span class="math display">\[
+\text{Verify}(\text{tag}_{\text{hmac}}) =
+\begin{cases}
+1 &amp; \Rightarrow \text{integrity valid} \\
+0 &amp; \Rightarrow \text{enter } \texttt{TAMPER\_EVIDENT}\text{ or }
+\texttt{SCRAM\_LOCK}\text{ per policy.}
+\end{cases}
+\]</span></p>
+<h2 id="decoy-derivation">7.6 Decoy Derivation</h2>
+<p>For a wrong passphrase <span
+class="math inline">\(P_{\text{wrong}}\)</span> that matches a
+decoy-routing rule:</p>
+<p><span class="math display">\[
+K_{\text{decoy},i} =
+\text{HKDF\text{-}SHA512}\Bigl(\text{Argon2id}\bigl(P_{\text{wrong}},\
+s_i,\ M_{\text{decoy}},\ I_{\text{decoy}},\ p\bigr),\ \text{info} =
+\texttt{&quot;SxCrypt-Decoy-i&quot;}\Bigr).
+\]</span></p>
+<p><strong>Decoy rules.</strong> A decoy payload may be returned only
+if:</p>
+<ol type="1">
+<li>Policy explicitly allows decoys.</li>
+<li>The decoy never executes code.</li>
+<li>The decoy never contacts a network.</li>
+<li>The decoy never modifies files.</li>
+<li>The decoy is clearly vault-local defensive deception.</li>
+</ol>
+<hr />
+<h1 id="seal-and-open-operations">8. Seal and Open Operations</h1>
+<h2 id="seal">8.1 Seal</h2>
+<pre><code>Seal(plaintext, passphrase):
+    vault_id   &lt;- secure_random(128 bits)
+    salt       &lt;- secure_random(256 bits)
+    nonce      &lt;- secure_random(96 bits)             # unique per (key, message)
+    header     &lt;- {version, vault_id, salt, policy, n=0, kdf_params}
+    K_master   &lt;- Argon2id(passphrase, salt, M(0), I(0), p)
+    (K_enc, K_mac, K_decoy, K_audit, K_policy)
+               &lt;- HKDF-SHA512(K_master, info=&quot;SxCrypt-Vault-v2&quot;)
+    AAD        &lt;- header
+    C, tag_gcm &lt;- AES-256-GCM.Encrypt(K_enc, nonce, plaintext, AAD)
+    tag_hmac   &lt;- HMAC-SHA512(K_mac, header || nonce || AAD || C || tag_gcm)
+    blob       &lt;- {header, nonce, C, tag_gcm, tag_hmac}
+    atomic_write(blob)
+    zeroize(passphrase, K_master, K_enc, K_mac, K_decoy, K_audit, plaintext)
+    return vault_id</code></pre>
+<h2 id="open">8.2 Open</h2>
+<pre><code>Open(blob, passphrase):
+    load header, nonce, C, tag_gcm, tag_hmac
+    load reactor policy state (n, A(n), H_tamper, ...)
+    compute C(n), M(n), I(n), D(n), B(n), U(n), A(n), R(n)
+    if State(n) in {SCRAM_LOCK, CONTAINMENT_LOCK, RECOVERY_REQUIRED}:
+        return reject(&quot;recovery required&quot;)
+    sleep(D(n))
+    K_master   &lt;- Argon2id(passphrase, header.salt, M(n), I(n), p)
+    (K_enc, K_mac, ...) &lt;- HKDF-SHA512(K_master, ...)
+    if not constant_time_eq(HMAC-SHA512(K_mac, header||nonce||AAD||C||tag_gcm), tag_hmac):
+        H_tamper &lt;- 1
+        increment n; update state; zeroize; return tamper_evident
+    try:
+        plaintext &lt;- AES-256-GCM.Decrypt(K_enc, nonce, C, tag_gcm, AAD=header)
+        reset_counters_per_policy()
+        state &lt;- OPEN
+        return plaintext
+    except AuthFailure:
+        increment n
+        recompute R(n); update State(n)
+        if policy.allow_decoy and decoy_match(passphrase):
+            return open_decoy_branch()        # vault-local, inert
+        zeroize(K_master, K_enc, K_mac, K_decoy, derived_buffers, passphrase)
+        return reject(State(n))</code></pre>
+<p>All branches end in zeroization of temporary in-memory secrets.</p>
+<hr />
+<h1 id="sxcrypt-core-research-cipher">9. SxCrypt-Core (Research
+Cipher)</h1>
+<blockquote>
+<p>This section describes a <strong>research-only</strong> AES-style
+SPN. It is included as a <em>mathematical laboratory</em> for studying
+SPN internals. <strong>Do not</strong> use SxCrypt-Core to protect real
+secrets.</p>
+</blockquote>
+<h2 id="state">9.1 State</h2>
+<p><span class="math display">\[
+S_r \in \mathrm{GF}(2^8)^{4 \times 4}.
+\]</span></p>
+<h2 id="round-function">9.2 Round Function</h2>
+<p><span class="math display">\[
+S_{r+1} =
+\text{AddRoundKey}\Bigl(\text{MixColumns}\bigl(\text{ShiftRows}\bigl(\text{SubBytes}(S_r)\bigr)\bigr),\
+K_r\Bigr).
+\]</span></p>
+<p>The final round may omit <code>MixColumns</code>, in the AES
+style.</p>
+<p>Parameters: <span class="math inline">\(\{128, 192,
+256\}\)</span>-bit keys; <span class="math inline">\(\{12, 14,
+16\}\)</span> rounds.</p>
+<h2 id="s-box">9.3 S-Box</h2>
+<p><span class="math display">\[
+S(x) = A \cdot \mathrm{Inv}_{\mathrm{GF}(2^8)}(x) \oplus c,
+\]</span></p>
+<p>with:</p>
+<ul>
+<li><span class="math inline">\(A\)</span> an invertible affine matrix
+over <span class="math inline">\(\mathrm{GF}(2)\)</span>.</li>
+<li><span class="math inline">\(c\)</span> an affine constant byte.</li>
+<li>Convention <span
+class="math inline">\(\mathrm{Inv}_{\mathrm{GF}(2^8)}(0) =
+0\)</span>.</li>
+</ul>
+<p>SxCrypt-Core default affine constant: <span class="math inline">\(c =
+\mathtt{0x53}\)</span> (compare AES: <span class="math inline">\(c =
+\mathtt{0x63}\)</span>).</p>
+<blockquote>
+<p><strong>Honest note.</strong> Changing the affine constant from <span
+class="math inline">\(\mathtt{0x63}\)</span> to <span
+class="math inline">\(\mathtt{0x53}\)</span> does <strong>not</strong>
+automatically make the cipher cryptographically stronger than AES.
+SxCrypt-Core’s purpose is <em>study</em>, not <em>replacement</em>.</p>
+</blockquote>
+<h2 id="avalanche">9.4 Avalanche</h2>
+<p>For plaintext <span class="math inline">\(x\)</span> and a one-bit
+perturbation <span class="math inline">\(x&#39; = x \oplus e_i\)</span>,
+let <span class="math inline">\(E_K^{(r)}(\cdot)\)</span> be the state
+after round <span class="math inline">\(r\)</span>. Define</p>
+<p><span class="math display">\[
+\Delta_r(i) = \mathrm{HammingDistance}\bigl(E_K^{(r)}(x),\
+E_K^{(r)}(x&#39;)\bigr),
+\qquad \delta_r(i) = \frac{\Delta_r(i)}{\text{block\_size}}.
+\]</span></p>
+<p>Ideal target:</p>
+<p><span class="math display">\[
+\mathbb{E}[\delta_r] \to \tfrac{1}{2}.
+\]</span></p>
+<p><strong>Strict Avalanche Criterion (SAC):</strong></p>
+<p><span class="math display">\[
+\Pr\bigl[E_K(x)_j \neq E_K(x \oplus e_i)_j\bigr] \approx \tfrac{1}{2}.
+\]</span></p>
+<p>Diffusion speed:</p>
+<p><span class="math display">\[
+\rho = \min\bigl\{r\ :\ |\mathbb{E}[\delta_r] - \tfrac{1}{2}| \leq
+\varepsilon\bigr\}.
+\]</span></p>
+<p>Entropy per round:</p>
+<p><span class="math display">\[
+H(S_r) = -\sum_b p_b \log_2 p_b,
+\]</span></p>
+<p>with <span class="math inline">\(p_b\)</span> the empirical
+distribution of byte values in <span
+class="math inline">\(S_r\)</span>.</p>
+<h2 id="s-box-metrics">9.5 S-Box Metrics</h2>
+<p>Nonlinearity:</p>
+<p><span class="math display">\[
+\mathrm{NL}(S) = 2^{m-1} - \tfrac{1}{2} \max_{a, b \neq 0} \Bigl| \sum_x
+(-1)^{b \cdot S(x) \oplus a \cdot x} \Bigr|.
+\]</span></p>
+<p>Differential uniformity:</p>
+<p><span class="math display">\[
+\mathrm{DU}(S) = \max_{a \neq 0,\, b}\ \#\{x\ :\ S(x) \oplus S(x \oplus
+a) = b\}.
+\]</span></p>
+<p>Linear approximation bias:</p>
+<p><span class="math display">\[
+\mathrm{Bias}(a, b) = \Bigl| \Pr[a \cdot x = b \cdot S(x)] -
+\tfrac{1}{2} \Bigr|.
+\]</span></p>
+<p>Algebraic degree:</p>
+<p><span class="math display">\[
+\deg(S) = \max_j \deg(S_j).
+\]</span></p>
+<h2 id="diffusion-layer">9.6 Diffusion Layer</h2>
+<p>Branch number:</p>
+<p><span class="math display">\[
+B_L = \min_{x \neq 0}\ \bigl(\mathrm{wt}(x) + \mathrm{wt}(L(x))\bigr).
+\]</span></p>
+<p>Minimum active S-boxes over <span class="math inline">\(r\)</span>
+rounds:</p>
+<p><span class="math display">\[
+A_r \geq \text{lower bound from the wide-trail strategy}.
+\]</span></p>
+<p>A higher minimum active S-box count improves provable resistance to
+differential and linear cryptanalysis.</p>
+<hr />
+<h1 id="more-than-aes-stated-honestly">10. “More Than AES” — Stated
+Honestly</h1>
+<p>AES is a standardized block cipher. SxCrypt-Vault uses
+<strong>AES-256-GCM</strong> for the actual encryption layer. SxCrypt is
+<em>more than AES</em> <strong>at the system level</strong> because it
+adds:</p>
+<ol type="1">
+<li>Adaptive Argon2id passphrase hardening.</li>
+<li>Memory-cost reaction <span class="math inline">\(M(n)\)</span>.</li>
+<li>Computational-cost reaction <span
+class="math inline">\(C(n)\)</span>.</li>
+<li>Defensive delay reaction <span
+class="math inline">\(D(n)\)</span>.</li>
+<li>Decoy branching <span class="math inline">\(B(n)\)</span> and
+uncertainty <span class="math inline">\(U(n)\)</span>.</li>
+<li>Tamper-evident vault metadata.</li>
+<li>HMAC-SHA512 external integrity.</li>
+<li>HKDF-SHA512 key separation.</li>
+<li>SCRAM emergency lock.</li>
+<li>Containment lock.</li>
+<li>Session-key zeroization.</li>
+<li>Vault-local audit trail.</li>
+<li>Recovery-required policy.</li>
+<li>Explicit safety boundaries.</li>
+<li>Vault-local, non-destructive defense.</li>
+</ol>
+<blockquote>
+<p>SxCrypt-Core is a research cipher used to study AES-style design.
+SxCrypt-Vault relies on AES-256-GCM for production protection. The
+innovation of SxCrypt is <strong>not</strong> replacing AES, but
+building a <strong>mathematically governed reactor-defense layer around
+encrypted vaults</strong>.</p>
+</blockquote>
+<hr />
+<h1 id="safety-principles-non-negotiable">11. Safety Principles
+(Non-Negotiable)</h1>
+<p>SxCrypt is bound by the following invariants at all layers:</p>
+<ol type="1">
+<li>Production encryption uses <strong>only</strong> standard, audited
+primitives.</li>
+<li>Custom cryptography is isolated to <strong>research
+mode</strong>.</li>
+<li><strong>No self-propagation.</strong></li>
+<li><strong>No external file deletion.</strong></li>
+<li><strong>No destructive payloads.</strong></li>
+<li><strong>No hidden network activity.</strong></li>
+<li><strong>No filesystem traversal outside the vault
+path.</strong></li>
+<li><strong>No persistence mechanisms</strong> beyond the vault file
+itself.</li>
+<li><strong>No privilege escalation.</strong></li>
+<li>All containment is <strong>vault-local</strong>.</li>
+<li>All destructive-sounding metaphors (e.g. <em>meltdown</em>,
+<em>SCRAM</em>) map only to <strong>safe internal state changes</strong>
+— never to external damage.</li>
+</ol>
+<hr />
+<h1 id="evaluation-methodology">12. Evaluation Methodology</h1>
+<h2 id="quantitative-metrics">12.1 Quantitative Metrics</h2>
+<ul>
+<li><strong>Brute-force cost growth.</strong> Plot <span
+class="math inline">\(C(n)\)</span>, <span
+class="math inline">\(M(n)\)</span>, <span
+class="math inline">\(I(n)\)</span>, <span
+class="math inline">\(D(n)\)</span>, <span
+class="math inline">\(B(n)\)</span>, <span
+class="math inline">\(U(n)\)</span>, <span
+class="math inline">\(R(n)\)</span>.</li>
+<li><strong>State transitions.</strong> Plot <span
+class="math inline">\(R(n)\)</span> against <span
+class="math inline">\(T_1, T_2, T_3, T_4\)</span>.</li>
+<li><strong>Legitimate-user usability.</strong>
+<ul>
+<li>Unlock latency at <span class="math inline">\(n=0\)</span>.</li>
+<li>Unlock latency after accidental failures.</li>
+<li>Recovery workflow time after <code>SCRAM_LOCK</code>.</li>
+</ul></li>
+<li><strong>Avalanche behavior.</strong> Round-by-round Hamming
+distance; convergence of <span class="math inline">\(\delta_r\)</span>
+to <span class="math inline">\(1/2\)</span>.</li>
+<li><strong>Entropy.</strong> <span
+class="math inline">\(H(S_r)\)</span> per round; byte distribution of
+round states.</li>
+<li><strong>S-box quality.</strong> Nonlinearity, differential
+uniformity, linear bias, algebraic degree; DDT and LAT heatmaps.</li>
+<li><strong>Diffusion layer.</strong> Branch number; minimum active
+S-box estimate; bit-dependency graph growth per round.</li>
+<li><strong>Tamper evidence.</strong> Bit-flip detection rate; header /
+ciphertext / nonce modification detection.</li>
+<li><strong>Decoy effectiveness.</strong> <span
+class="math inline">\(U(n)\)</span>, <span
+class="math inline">\(B(n)\)</span>, false-positive risk for real
+users.</li>
+</ul>
+<h2 id="safety-validation-tests">12.2 Safety Validation Tests</h2>
+<ul>
+<li>Confirm <strong>no network calls</strong> are made by the vault
+binary.</li>
+<li>Confirm <strong>no external file deletion</strong>.</li>
+<li>Confirm <strong>no self-replication</strong>.</li>
+<li>Confirm <strong>no file traversal</strong> outside the vault
+path.</li>
+<li>Confirm zeroization affects <strong>only</strong> temporary internal
+secrets.</li>
+</ul>
+<h2 id="required-plots">12.3 Required Plots</h2>
+<ol type="1">
+<li><span class="math inline">\(C(n)\)</span>: computational cost
+reaction curve.</li>
+<li><span class="math inline">\(M(n)\)</span>: memory reaction
+curve.</li>
+<li><span class="math inline">\(I(n)\)</span>: iteration reaction
+curve.</li>
+<li><span class="math inline">\(D(n)\)</span>: delay reaction
+curve.</li>
+<li><span class="math inline">\(B(n)\)</span>: decoy branching
+curve.</li>
+<li><span class="math inline">\(U(n)\)</span>: attacker uncertainty
+curve.</li>
+<li><span class="math inline">\(R(n)\)</span>: reactor risk score with
+thresholds <span class="math inline">\(T_1, T_2, T_3, T_4\)</span>.</li>
+<li>State transition diagram.</li>
+<li>Failed attempts vs. containment level.</li>
+<li>Legitimate user latency vs. attacker cost.</li>
+<li>Round avalanche curve <span
+class="math inline">\(\delta_r\)</span>.</li>
+<li>Entropy per round <span class="math inline">\(H(S_r)\)</span>.</li>
+<li>S-box differential distribution heatmap (DDT).</li>
+<li>S-box linear approximation heatmap (LAT).</li>
+<li>Key schedule visualization.</li>
+<li>Reactor heatmap over time.</li>
+<li>Tamper-detection success chart.</li>
+</ol>
+<hr />
+<h1 id="implementation-requirements">13. Implementation
+Requirements</h1>
+<ol type="1">
+<li><strong>Constant-time comparison</strong> for all MAC and tag
+checks.</li>
+<li><strong>Cryptographically secure randomness</strong> for salts,
+nonces, vault IDs, decoy IDs.</li>
+<li><strong>Never reuse an AES-GCM nonce</strong> with the same
+key.</li>
+<li><strong>Version every vault header.</strong></li>
+<li><strong>Bind header metadata into AAD</strong> for AES-GCM.</li>
+<li><strong>Separate keys</strong> via HKDF; never use a single derived
+key for multiple purposes.</li>
+<li><strong>Zeroize sensitive memory</strong> wherever the language and
+runtime permit.</li>
+<li><strong>Safe file permissions</strong> on vault files (owner-only by
+default).</li>
+<li><strong>Atomic writes</strong> for vault updates (write-temp +
+rename).</li>
+<li><strong>Vault-local, privacy-preserving audit logs.</strong></li>
+<li><strong>Dangerous operations impossible by design</strong> — not
+merely disabled by configuration.</li>
+<li><strong>Separate research mode and production mode.</strong>
+Production mode must use audited primitives only.</li>
+</ol>
+<hr />
+<h1 id="operational-boundaries">14. Operational Boundaries</h1>
+<p>SxCrypt’s adaptive defenses must always satisfy:</p>
+<ul>
+<li>Maximum delay <span class="math inline">\(D_{\max}\)</span> is
+bounded so accidental failures do not produce a denial of service
+against the legitimate user.</li>
+<li>Memory cap <span class="math inline">\(M_{\max}\)</span> is bounded
+by the target deployment hardware to prevent self-induced
+exhaustion.</li>
+<li>Cost cap <span class="math inline">\(C_{\max}\)</span> is bounded so
+recovery workflows remain feasible.</li>
+<li>Recovery is always possible via a documented, out-of-band recovery
+credential.</li>
+<li>No state transition, including <code>CONTAINMENT_LOCK</code>, ever
+performs an action outside the vault container.</li>
+</ul>
+<hr />
+<h1 id="conclusion">15. Conclusion</h1>
+<p>SxCrypt presents a disciplined, mathematically governed defense layer
+wrapped around standard cryptographic primitives. Its contribution is
+<strong>not</strong> a new block cipher — the included SxCrypt-Core is
+openly labeled as research only — but a <strong>reactor model</strong>
+that turns each failed attempt into measurable, bounded, internal cost
+growth, while honoring a strict safety contract:</p>
+<blockquote>
+<p>A failed attempt must increase <strong>internal defensive
+cost</strong>, never <strong>external damage</strong>.</p>
+</blockquote>
+<p>AES continues to protect ciphertext. SxCrypt protects the
+<strong>vault</strong> around it.</p>
+<hr />
+<h1 id="appendix-a.-dedication-the-first-payload">Appendix A.
+Dedication: The First Payload</h1>
+<blockquote>
+<p>Happy birthday, sweetheart. I built a reactor-defended cipher, but
+the most important payload it will ever protect is simple: I love you.
+Some secrets need encryption. Some truths deserve to be written in
+plaintext. To sxn dxv</p>
+</blockquote>
+<p>— Bala</p>
+</body>
+</html>

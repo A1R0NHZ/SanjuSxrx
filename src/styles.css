@@ -1,0 +1,64 @@
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+@import "katex/dist/katex.min.css";
+
+@source "../src";
+
+@custom-variant dark (&:is(.dark *));
+
+@source inline("border-reactor-glow/30 bg-reactor-glow/5 text-reactor-glow border-reactor-warn/30 bg-reactor-warn/5 text-reactor-warn border-reactor-danger/30 bg-reactor-danger/5 text-reactor-danger accent-reactor-warn bg-reactor-danger/20 border-reactor-danger bg-reactor-glow/20 border-reactor-glow");
+
+@theme {
+  --color-reactor-bg: #0A0A0B;
+  --color-reactor-panel: #141417;
+  --color-reactor-panel-2: #1c1c20;
+  --color-reactor-line: rgba(255, 255, 255, 0.08);
+  --color-reactor-glow: #00FF41;
+  --color-reactor-warn: #FFB800;
+  --color-reactor-danger: #FF3131;
+  --color-reactor-muted: #6b6b70;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+}
+
+@theme inline {
+  --color-background: var(--color-reactor-bg);
+  --color-foreground: #d6d3d1;
+  --color-border: var(--color-reactor-line);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+@layer base {
+  html, body {
+    background: var(--color-reactor-bg);
+    color: #d6d3d1;
+    font-family: var(--font-sans);
+  }
+  * { border-color: var(--color-reactor-line); }
+  ::selection {
+    background: color-mix(in oklab, var(--color-reactor-glow) 30%, transparent);
+    color: var(--color-reactor-glow);
+  }
+}
+
+@utility panel {
+  background: var(--color-reactor-panel);
+  border: 1px solid var(--color-reactor-line);
+}
+
+@utility scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,255,65,0.025) 2px,
+    rgba(0,255,65,0.025) 3px
+  );
+}
+
+.katex { color: inherit; font-size: 1em; }
+.katex-display { margin: 0.75em 0; overflow-x: auto; overflow-y: hidden; }
