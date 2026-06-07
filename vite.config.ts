@@ -9,12 +9,8 @@ export default defineConfig({
     tsconfigPaths(),
     tailwindcss(),
     tanstackStart({
-      // Use node-server preset so Nitro outputs to .output/server/index.mjs,
-      // which is what Render's start command expects.
-      server: {
-        preset: "node-server",
-        plugins: ["./src/nitro-plugins/error-handler"],
-      },
+      // SSR error wrapper — catches and normalises catastrophic SSR errors.
+      server: { entry: "server" },
     }),
     react(),
   ],

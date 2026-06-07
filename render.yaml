@@ -3,7 +3,7 @@ services:
     name: sanjusxrx
     runtime: node
     buildCommand: npm install && npm run build
-    startCommand: node .output/server/index.mjs
+    startCommand: npx srvx --prod -s dist/client dist/server/server.js
     envVars:
       - key: NODE_ENV
         value: production
